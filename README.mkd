@@ -1,0 +1,34 @@
+# Clone
+```bach
+git clone https://github.com/Vinekko/chatbot01.git
+```
+
+# Create VIEW
+```bash
+python -m venv chatbot
+```
+
+# Act env
+
+**windows**
+```bash
+chatbot\Scripts\activate
+```
+
+**Linux**
+```bash
+source chatbot/Scripts/activate
+```
+
+# install depn
+```bash
+pip install -r requirements.txt
+pip install "fastapi[standard]"
+```
+
+# Run pro...
+
+```bash
+fastapi dev main.py
+unicorn main.app --reload
+```
