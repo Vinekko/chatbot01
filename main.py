@@ -1,33 +1,6 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+# from fastapi import FastAPI, HTTPException
 from schemas.schema import User, Bot, Registration
-from langchain_cohere import ChatCohere
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-import os
-
-app = FastAPI()
-
-users = [
-    {
-        "id": 1, 
-        "name": "John Doe",
-        "email": "test@gmail.com",
-        "age": 25,
-    },
-    {
-        "id": 2, 
-        "name": "Jane silva",
-        "email": "test1@gmail.com",
-        "age": 20,
-    },
-    {
-        "id": 3, 
-        "name": "John Smith",
-        "email": "test2@gmail.com",
-        "age": 20,
-    },
-]
-
+from core.models import *
 
 @app.get("/")
 def hello_world():
@@ -60,13 +33,6 @@ def create_user(user: User) -> dict:
         "message": "succesfully created user",
         "data" : user_data
     }
-
-
-model = ChatCohere()
-
-historial = [
-    SystemMessage(content="Eres un chatbot que sabe de programacion y te llamas Ricardo"),
-]
 
 @app.post("/prompt")
 def create_prompt(prompt: Bot) -> dict:
