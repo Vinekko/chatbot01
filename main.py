@@ -1,5 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from schemas.schema import User, Bot, Registration
+from langchain_cohere import ChatCohere
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+import os
 
 app = FastAPI()
 
@@ -23,11 +27,6 @@ users = [
         "age": 20,
     },
 ]
-
-class User(BaseModel):
-    name: str
-    email: str
-    age: int
 
 
 @app.get("/")
@@ -62,12 +61,33 @@ def create_user(user: User) -> dict:
         "data" : user_data
     }
 
-class Bot(BaseModel):
-    prompt: str
+
+model = ChatCohere()
+
+historial = [
+    SystemMessage(content="Eres un chatbot que sabe de programacion y te llamas Ricardo"),
+]
 
 @app.post("/prompt")
 def create_prompt(prompt: Bot) -> dict:
+    historial.append(HumanMessage(content=prompt.prompt))
+    response = model.invoke(historial)
+    historial.append(AIMessage(content=response.content)),
+
     return {
         "message": "succesfully created prompt",
-        "data" : prompt
+        "data" : response.content,
+        # "historial": historial[-1].content
+        "historial": [i.content for i in historial]
     }
+
+@app.post("/registration")
+def registration(user: Registration):
+    registration_form = user.model_dump()
+    return {
+        "message": "User registered successfully",
+        "data": {
+            "user_name": user.name
+        }
+    }
+
